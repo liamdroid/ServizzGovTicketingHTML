@@ -1,0 +1,26 @@
+<script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.16.4/dist/powerbi.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var reportContainer = document.querySelector('iframe');
+ 
+        var report = powerbi.embed(reportContainer, {
+            type: 'report',
+            embedUrl: reportContainer.src, // Auto-detect the embedded URL
+            tokenType: powerbi.models.TokenType.Embed,
+            settings: {
+                filterPaneEnabled: false,
+                navContentPaneEnabled: false
+            }
+        });
+ 
+        report.on("loaded", function () {
+            var pageIndex = 0;
+            report.getPages().then(function (pages) {
+                setInterval(function () {
+                    pages[pageIndex].setActive();
+                    pageIndex = (pageIndex + 1) % pages.length;
+                }, 5000); // Switch every 5 seconds
+            });
+        });
+    });
+</script>

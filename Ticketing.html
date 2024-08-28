@@ -1,26 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Auto-Rotate</title>
 <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.16.4/dist/powerbi.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var reportContainer = document.querySelector('iframe');
+</head>
+<body>
+    <div id="reportContainer" style="height: 100vh; width: 100%;"></div>
  
-        var report = powerbi.embed(reportContainer, {
-            type: 'report',
-            embedUrl: reportContainer.src, // Auto-detect the embedded URL
-            tokenType: powerbi.models.TokenType.Embed,
-            settings: {
-                filterPaneEnabled: false,
-                navContentPaneEnabled: false
-            }
-        });
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var reportContainer = document.getElementById('reportContainer');
  
-        report.on("loaded", function () {
-            var pageIndex = 0;
-            report.getPages().then(function (pages) {
-                setInterval(function () {
-                    pages[pageIndex].setActive();
-                    pageIndex = (pageIndex + 1) % pages.length;
-                }, 5000); // Switch every 5 seconds
+            // Define the embed configuration
+            var embedConfiguration = {
+                type: 'report',
+                embedUrl: 'YOUR_EMBED_URL_HERE', // Replace with your actual embed URL
+                tokenType: powerbi.models.TokenType.Embed,
+                accessToken: 'YOUR_ACCESS_TOKEN_HERE', // Include if your report requires an access token
+                settings: {
+                    filterPaneEnabled: false,
+                    navContentPaneEnabled: false
+                }
+            };
+ 
+            // Embed the Power BI report
+            var report = powerbi.embed(reportContainer, embedConfiguration);
+ 
+            // Rotate pages once the report is loaded
+            report.on("loaded", function () {
+                var pageIndex = 0;
+                report.getPages().then(function (pages) {
+                    setInterval(function () {
+                        pages[pageIndex].setActive();
+                        pageIndex = (pageIndex + 1) % pages.length;
+                    }, 5000); // Rotate every 5 seconds
+                });
             });
         });
-    });
-</script>
+    </script>
+</body>
+</html>
